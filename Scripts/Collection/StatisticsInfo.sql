@@ -25,8 +25,6 @@ select
 	, s.filter_definition
 	, s.is_temporary
 	, s.is_incremental
-	, s.has_persisted_sample
-	, s.stats_generation_method_desc
 	, stats_columns = substring(convert(nvarchar(4000), ((
 		select N', ' + quotename(c.name)
 		from sys.stats_columns sc
@@ -55,7 +53,12 @@ select
 	, object_name = t.name
 	, s.stats_id
 	, stats_name = s.name
-	, sh.*
+	, sh.step_number
+	, sh.range_high_key
+	, sh.range_rows
+	, sh.equal_rows
+	, sh.distinct_range_rows
+	, sh.average_range_rows
 from sys.tables t with (nolock)
 join sys.stats s with (nolock) on s.object_id = t.object_id
 cross apply sys.dm_db_stats_histogram(s.object_id, s.stats_id) sh

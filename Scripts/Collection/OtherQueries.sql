@@ -28,14 +28,11 @@ select
 	, virtual_machine_type_desc
 	, softnuma_configuration
 	, softnuma_configuration_desc
-	, process_physical_affinity
 	, sql_memory_model
 	, sql_memory_model_desc
 	, socket_count
 	, cores_per_socket
 	, numa_node_count
-	, container_type
-	, container_type_desc
 from sys.dm_os_sys_info;
 
 select memory_clerk_address, type, name, memory_node_id, pages_kb / 1024 as pages_mb 

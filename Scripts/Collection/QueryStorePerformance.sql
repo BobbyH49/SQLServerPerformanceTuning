@@ -64,9 +64,6 @@ begin
 		, last_execution_time_plan_level = p.last_execution_time
 		, p.avg_compile_duration
 		, p.last_compile_duration
-		, p.has_compile_replay_script
-		, p.is_optimized_plan_forcing_disabled
-		, p.plan_forcing_type_desc
 		, i.runtime_stats_interval_id
 		, i.start_time
 		, i.end_time
@@ -120,26 +117,6 @@ begin
 		, r.min_rowcount
 		, r.max_rowcount
 		, r.stdev_rowcount
-		, r.avg_num_physical_io_reads
-		, r.last_num_physical_io_reads
-		, r.min_num_physical_io_reads
-		, r.max_num_physical_io_reads
-		, r.stdev_num_physical_io_reads
-		, r.avg_log_bytes_used
-		, r.last_log_bytes_used
-		, r.min_log_bytes_used
-		, r.max_log_bytes_used
-		, r.stdev_log_bytes_used
-		, r.avg_tempdb_space_used
-		, r.last_tempdb_space_used
-		, r.min_tempdb_space_used
-		, r.max_tempdb_space_used
-		, r.stdev_tempdb_space_used
-		, r.avg_page_server_io_reads
-		, r.last_page_server_io_reads
-		, r.min_page_server_io_reads
-		, r.max_page_server_io_reads
-		, r.stdev_page_server_io_reads
 	into ##QueryStorePerf
 	from sys.query_store_query q
 	join sys.query_context_settings c on c.context_settings_id = q.context_settings_id
@@ -211,9 +188,6 @@ begin
 		, last_execution_time_plan_level = p.last_execution_time
 		, p.avg_compile_duration
 		, p.last_compile_duration
-		, p.has_compile_replay_script
-		, p.is_optimized_plan_forcing_disabled
-		, p.plan_forcing_type_desc
 		, i.runtime_stats_interval_id
 		, i.start_time
 		, i.end_time
@@ -267,26 +241,6 @@ begin
 		, r.min_rowcount
 		, r.max_rowcount
 		, r.stdev_rowcount
-		, r.avg_num_physical_io_reads
-		, r.last_num_physical_io_reads
-		, r.min_num_physical_io_reads
-		, r.max_num_physical_io_reads
-		, r.stdev_num_physical_io_reads
-		, r.avg_log_bytes_used
-		, r.last_log_bytes_used
-		, r.min_log_bytes_used
-		, r.max_log_bytes_used
-		, r.stdev_log_bytes_used
-		, r.avg_tempdb_space_used
-		, r.last_tempdb_space_used
-		, r.min_tempdb_space_used
-		, r.max_tempdb_space_used
-		, r.stdev_tempdb_space_used
-		, r.avg_page_server_io_reads
-		, r.last_page_server_io_reads
-		, r.min_page_server_io_reads
-		, r.max_page_server_io_reads
-		, r.stdev_page_server_io_reads
 	from sys.query_store_query q
 	join sys.query_context_settings c on c.context_settings_id = q.context_settings_id
 	join sys.query_store_plan p on p.query_id = q.query_id
@@ -297,4 +251,3 @@ begin
 	and i.end_time <= @end_time
 	order by runtime_stats_id;
 end
-
