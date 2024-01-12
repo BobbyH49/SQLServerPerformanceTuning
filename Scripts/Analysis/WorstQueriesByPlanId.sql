@@ -33,7 +33,6 @@ select
 	, total_logical_reads_gb = sum(p.avg_logical_io_reads * p.count_executions) / 128 / 1024
 	, total_physical_reads_gb = sum(p.avg_physical_io_reads * p.count_executions) / 128 / 1024
 	, total_logical_writes_gb = sum(p.avg_logical_io_writes * p.count_executions) / 128 / 1024
-	, total_tempdb_space_used_gb = sum(p.avg_tempdb_space_used * p.count_executions) / 128 / 1024
 	, w.total_wait_minutes
 from ##QueryStorePerf p
 join (
