@@ -50,7 +50,7 @@ begin
 		, logical_reads_gb = sum(p.avg_logical_io_reads * p.count_executions) / 128 / 1024
 		, physical_reads_gb = sum(p.avg_physical_io_reads * p.count_executions) / 128 / 1024
 		, logical_writes_gb = sum(p.avg_logical_io_writes * p.count_executions) / 128 / 1024
-		, w.total_wait_minutes = coalesce(w.total_wait_minutes, 0)
+		, total_wait_minutes = coalesce(w.total_wait_minutes, 0)
 	from ##QueryStorePerf p
 	left join (
 		select
