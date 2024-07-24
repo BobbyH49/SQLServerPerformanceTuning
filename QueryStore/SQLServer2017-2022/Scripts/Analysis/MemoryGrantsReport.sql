@@ -5,9 +5,17 @@ DECLARE
 	, @end_time DATETIMEOFFSET = '2024-07-10 11:00:00.000 + 00:00'
 
 SELECT
-		total_memory_grant_gb = SUM(avg_query_max_used_memory * count_executions) / 128 / 1024
-		, total_memory_grant_tb = SUM(avg_query_max_used_memory * count_executions) / 128 / 1024 / 1024
-	, total_query_count = COUNT(DISTINCT query_id)
+	total_memory_grant_gb = SUM(avg_query_max_used_memory * count_executions) / 128 / 1024
+	, total_memory_grant_tb = SUM(avg_query_max_used_memory * count_executions) / 128 / 1024 / 1024
+	, total_query_count = (
+		SELECT COUNT(*)
+		FROM (
+			SELECT DISTINCT database_name, query_hash, object_name
+			FROM ##QueryStorePerf
+			WHERE start_time >= @start_time
+			AND end_time <= @end_time
+		) a
+	  )
 FROM ##QueryStorePerf
 WHERE start_time >= @start_time
 AND end_time <= @end_time;

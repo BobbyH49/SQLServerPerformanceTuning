@@ -7,7 +7,15 @@ DECLARE
 SELECT
 	total_tempdb_space_used_mb = SUM(avg_tempdb_space_used * count_executions) / 128
 	, total_tempdb_space_used_gb = SUM(avg_tempdb_space_used * count_executions) / 128 / 1024
-	, total_query_count = COUNT(DISTINCT query_id)
+	, total_query_count = (
+		SELECT COUNT(*)
+		FROM (
+			SELECT DISTINCT database_name, query_hash, object_name
+			FROM ##QueryStorePerf
+			WHERE start_time >= @start_time
+			AND end_time <= @end_time
+		) a
+	  )
 FROM ##QueryStorePerf
 WHERE start_time >= @start_time
 AND end_time <= @end_time;

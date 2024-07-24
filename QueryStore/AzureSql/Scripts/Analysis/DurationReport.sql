@@ -7,7 +7,15 @@ DECLARE
 SELECT
 	total_duration_minutes = SUM(avg_duration * count_executions) / 1000000 / 60
 	, total_duration_hours = SUM(avg_duration * count_executions) / 1000000 / 3600
-	, total_query_count = COUNT(DISTINCT query_id)
+	, total_query_count = (
+		SELECT COUNT(*)
+		FROM (
+			SELECT DISTINCT database_name, query_hash, object_name
+			FROM ##QueryStorePerf
+			WHERE start_time >= @start_time
+			AND end_time <= @end_time
+		) a
+	  )
 FROM ##QueryStorePerf
 WHERE start_time >= @start_time
 AND end_time <= @end_time;

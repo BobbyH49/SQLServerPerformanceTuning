@@ -7,7 +7,15 @@ DECLARE
 SELECT
 	total_page_server_reads_gb = SUM(avg_page_server_io_reads * count_executions) / 128 / 1024
 	, total_page_server_reads_tb = SUM(avg_page_server_io_reads * count_executions) / 128 / 1024 / 1024
-	, total_query_count = COUNT(DISTINCT query_id)
+	, total_query_count = (
+		SELECT COUNT(*)
+		FROM (
+			SELECT DISTINCT database_name, query_hash, object_name
+			FROM ##QueryStorePerf
+			WHERE start_time >= @start_time
+			AND end_time <= @end_time
+		) a
+	  )
 FROM ##QueryStorePerf
 WHERE start_time >= @start_time
 AND end_time <= @end_time;

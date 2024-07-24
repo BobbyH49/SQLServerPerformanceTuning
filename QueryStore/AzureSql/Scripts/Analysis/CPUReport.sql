@@ -8,7 +8,15 @@ DECLARE
 SELECT
 	total_cpu_minutes = SUM(avg_cpu_time * count_executions) / 1000000 / 60
 	, average_cpu_pct = CAST(CAST(SUM(avg_cpu_time * count_executions) AS DECIMAL(20, 2)) * 100 / (SELECT CAST(DATEDIFF(hh, @start_time, @end_time) AS BIGINT) * 60 * 60 * 1000000 * @vCores) AS DECIMAL(5, 2))
-	, total_query_count = COUNT(DISTINCT query_id)
+	, total_query_count = (
+		SELECT COUNT(*)
+		FROM (
+			SELECT DISTINCT database_name, query_hash, object_name
+			FROM ##QueryStorePerf
+			WHERE start_time >= @start_time
+			AND end_time <= @end_time
+		) a
+	  )
 FROM ##QueryStorePerf
 WHERE start_time >= @start_time
 AND end_time <= @end_time;

@@ -7,7 +7,15 @@ DECLARE
 SELECT
 	total_log_used_mb = SUM(avg_log_bytes_used * count_executions) / 1024 / 1024
 	, total_log_used_gb = SUM(avg_log_bytes_used * count_executions) / 1024 / 1024 / 1024
-	, total_query_count = COUNT(DISTINCT query_id)
+	, total_query_count = (
+		SELECT COUNT(*)
+		FROM (
+			SELECT DISTINCT database_name, query_hash, object_name
+			FROM ##QueryStorePerf
+			WHERE start_time >= @start_time
+			AND end_time <= @end_time
+		) a
+	  )
 FROM ##QueryStorePerf
 WHERE start_time >= @start_time
 AND end_time <= @end_time;
