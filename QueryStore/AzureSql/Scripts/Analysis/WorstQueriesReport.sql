@@ -175,7 +175,7 @@ FROM (
 			, database_name
 			, query_hash
 			, score = (11 - RANK() OVER(ORDER BY SUM(avg_num_physical_io_reads * count_executions) DESC))
-				* CASE WHEN SUM(avg_num_physical_io_reads * count_executions)4 >= @total_physical_reads_io_priority_threshold THEN 2 ELSE 0 END
+				* CASE WHEN SUM(avg_num_physical_io_reads * count_executions) >= @total_physical_reads_io_priority_threshold THEN 2 ELSE 0 END
 		FROM ##QueryStorePerf
 		WHERE start_time >= @start_time
 		AND end_time <= @end_time
