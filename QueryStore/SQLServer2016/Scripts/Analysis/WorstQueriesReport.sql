@@ -209,12 +209,12 @@ SELECT
 	, object_name = CASE WHEN qsp.object_name = N'NULL' OR qsp.object_name IS NULL THEN N'' ELSE qsp.schema_name + N'.' + qsp.object_name END
 	, qsp.query_plan_hash
 	, execution_count = SUM(qsp.count_executions)
-	, average_rowcount = AVG(qsp.avg_rowcount)
-	, average_duration_microseconds = AVG(qsp.avg_duration)
+	, average_rowcount = SUM(qsp.avg_rowcount * qsp.count_executions) / SUM(qsp.count_executions)
+	, average_duration_microseconds = SUM(qsp.avg_duration * qsp.count_executions) / SUM(qsp.count_executions)
 	, total_duration_minutes = SUM(qsp.avg_duration * qsp.count_executions) / 1000000 / 60
 	, total_cpu_minutes = SUM(qsp.avg_cpu_time * qsp.count_executions) / 1000000 / 60
 	, total_clr_minutes = SUM(qsp.avg_clr_time * qsp.count_executions) / 1000000 / 60
-	, average_dop = AVG(qsp.avg_dop)
+	, average_dop = SUM(qsp.avg_dop * qsp.count_executions) / SUM(qsp.count_executions)
 	, total_logical_reads_gb = SUM(qsp.avg_logical_io_reads * qsp.count_executions) / 128 / 1024
 	, total_memory_grants_reads_gb = SUM(qsp.avg_query_max_used_memory * qsp.count_executions) / 128 / 1024
 	, total_physical_reads_gb = SUM(qsp.avg_physical_io_reads * qsp.count_executions) / 128 / 1024

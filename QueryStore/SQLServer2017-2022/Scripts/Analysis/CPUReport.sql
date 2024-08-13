@@ -11,7 +11,7 @@ SELECT
 	, total_query_count = (
 		SELECT COUNT(*)
 		FROM (
-			SELECT DISTINCT database_name, query_hash, object_name
+			SELECT DISTINCT database_name, query_hash, schema_name, object_name
 			FROM ##QueryStorePerf
 			WHERE start_time >= @start_time
 			AND end_time <= @end_time
@@ -28,12 +28,12 @@ AS (
 		, query_hash
 		, object_name = CASE WHEN object_name = N'NULL' OR object_name IS NULL THEN N'' ELSE schema_name + N'.' + object_name END
 		, execution_count = SUM(count_executions)
-		, average_rowcount = AVG(avg_rowcount)
+		, average_rowcount = SUM(avg_rowcount * count_executions) / SUM(count_executions)
 		, min_cpu_microseconds = MIN(min_cpu_time)
-		, avg_cpu_microseconds = AVG(avg_cpu_time)
+		, avg_cpu_microseconds = SUM(avg_cpu_time * count_executions) / SUM(count_executions)
 		, max_cpu_microseconds = MAX(max_cpu_time)
 		, total_cpu_minutes = SUM(avg_cpu_time * count_executions) / 1000000 / 60
-		, average_dop = AVG(avg_dop)
+		, average_dop = SUM(avg_dop * count_executions) / SUM(count_executions)
 	FROM ##QueryStorePerf
 	WHERE start_time >= @start_time
 	AND end_time <= @end_time

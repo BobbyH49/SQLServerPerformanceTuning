@@ -10,7 +10,7 @@ SELECT
 	, total_query_count = (
 		SELECT COUNT(*)
 		FROM (
-			SELECT DISTINCT database_name, query_hash, object_name
+			SELECT DISTINCT database_name, query_hash, schema_name, object_name
 			FROM ##QueryStorePerf
 			WHERE start_time >= @start_time
 			AND end_time <= @end_time
@@ -27,9 +27,9 @@ AS (
 		, query_hash
 		, object_name = CASE WHEN object_name = N'NULL' OR object_name IS NULL THEN N'' ELSE schema_name + N'.' + object_name END
 		, execution_count = SUM(count_executions)
-		, average_rowcount = AVG(avg_rowcount)
+		, average_rowcount = SUM(avg_rowcount * count_executions) / SUM(count_executions)
 		, min_clr_microseconds = MIN(min_clr_time)
-		, avg_clr_microseconds = AVG(avg_clr_time)
+		, avg_clr_microseconds = SUM(avg_clr_time * count_executions) / SUM(count_executions)
 		, max_clr_microseconds = MAX(max_clr_time)
 		, total_clr_minutes = SUM(avg_clr_time * count_executions) / 1000000 / 60
 	FROM ##QueryStorePerf

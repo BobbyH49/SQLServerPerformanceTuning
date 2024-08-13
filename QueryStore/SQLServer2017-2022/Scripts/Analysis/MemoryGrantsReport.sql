@@ -10,7 +10,7 @@ SELECT
 	, total_query_count = (
 		SELECT COUNT(*)
 		FROM (
-			SELECT DISTINCT database_name, query_hash, object_name
+			SELECT DISTINCT database_name, query_hash, schema_name, object_name
 			FROM ##QueryStorePerf
 			WHERE start_time >= @start_time
 			AND end_time <= @end_time
@@ -27,9 +27,9 @@ AS (
 		, query_hash
 		, object_name = CASE WHEN object_name = N'NULL' OR object_name IS NULL THEN N'' ELSE schema_name + N'.' + object_name END
 		, execution_count = SUM(count_executions)
-		, average_rowcount = AVG(avg_rowcount)
+		, average_rowcount = SUM(avg_rowcount * count_executions) / SUM(count_executions)
 		, min_memory_grant_mb = MIN(min_query_max_used_memory) / 128
-		, avg_memory_grant_mb = AVG(avg_query_max_used_memory) / 128
+		, avg_memory_grant_mb = SUM(avg_query_max_used_memory * count_executions) / SUM(count_executions) / 128
 		, max_memory_grant_mb = MAX(max_query_max_used_memory) / 128
 		, total_memory_grant_gb = SUM(avg_query_max_used_memory * count_executions) / 128 / 1024
 	FROM ##QueryStorePerf

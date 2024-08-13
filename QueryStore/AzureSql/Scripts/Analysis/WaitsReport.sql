@@ -7,6 +7,15 @@ DECLARE
 SELECT
 	total_query_wait_time_minutes = SUM(total_query_wait_time_ms) / 1000 / 60
 	, total_query_wait_time_hours = SUM(total_query_wait_time_ms) / 1000 / 60 / 60
+	, total_query_count = (
+		SELECT COUNT(*)
+		FROM (
+			SELECT DISTINCT database_name, query_hash, schema_name, object_name
+			FROM ##QueryStorePerf
+			WHERE start_time >= @start_time
+			AND end_time <= @end_time
+		) a
+	  )
 FROM ##QueryStoreWaits
 WHERE start_time >= @start_time
 AND end_time <= @end_time;

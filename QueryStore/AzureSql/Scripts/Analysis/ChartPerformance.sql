@@ -16,7 +16,7 @@ SELECT
 	, hour = DATEPART(hh, p.start_time) + 1
 	, day_of_week_hour = DATEPART(WEEKDAY, p.start_time) * 100 + DATEPART(hh, p.start_time) + 1
 	, total_executions = SUM(p.count_executions)
-	, average_duration_microseconds = AVG(p.avg_duration)
+	, average_duration_microseconds = SUM(p.avg_duration * p.count_executions) / SUM(p.count_executions)
 	, total_duration_minutes = SUM(p.avg_duration * p.count_executions) / 1000000 / 60
 	, total_cpu_minutes_inc_func = SUM(p.avg_cpu_time * p.count_executions) / 1000000 / 60
 	, cpu_percent_inc_func = (SUM(p.avg_cpu_time * p.count_executions) * 100) / 1000000 / 3600 / @vCores

@@ -10,7 +10,7 @@ SELECT
 	, total_query_count = (
 		SELECT COUNT(*)
 		FROM (
-			SELECT DISTINCT database_name, query_hash, object_name
+			SELECT DISTINCT database_name, query_hash, schema_name, object_name
 			FROM ##QueryStorePerf
 			WHERE start_time >= @start_time
 			AND end_time <= @end_time
@@ -27,9 +27,9 @@ AS (
 		, query_hash
 		, object_name = CASE WHEN object_name = N'NULL' OR object_name IS NULL THEN N'' ELSE schema_name + N'.' + object_name END
 		, execution_count = SUM(count_executions)
-		, average_rowcount = AVG(avg_rowcount)
+		, average_rowcount = SUM(avg_rowcount * count_executions) / SUM(count_executions)
 		, min_logical_writes_mb = MIN(min_logical_io_writes) / 128
-		, avg_logical_writes_mb = AVG(avg_logical_io_writes) / 128
+		, avg_logical_writes_mb = SUM(avg_logical_io_writes * count_executions) / SUM(count_executions) / 128
 		, max_logical_writes_mb = MAX(max_logical_io_writes) / 128
 		, total_logical_writes_gb = SUM(avg_logical_io_writes * count_executions) / 128 / 1024
 	FROM ##QueryStorePerf
