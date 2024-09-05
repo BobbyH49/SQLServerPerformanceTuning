@@ -19,9 +19,9 @@ SELECT
 	, average_duration_microseconds = SUM(p.avg_duration * p.count_executions) / SUM(p.count_executions)
 	, total_duration_minutes = SUM(p.avg_duration * p.count_executions) / 1000000 / 60
 	, total_cpu_minutes_inc_func = SUM(p.avg_cpu_time * p.count_executions) / 1000000 / 60
-	, cpu_percent_inc_func = (SUM(p.avg_cpu_time * p.count_executions) * 100) / 1000000 / 3600 / @vCores
+	, cpu_percent_inc_func = (SUM(p.avg_cpu_time * p.count_executions) * 100) / 1000000 / 60 / DATEDIFF(mi, p.start_time, p.end_time) / @vCores
 	, total_cpu_minutes_exc_func = SUM(CASE WHEN p.object_type IN ('FN', 'TF') THEN 0 ELSE p.avg_cpu_time END * p.count_executions) / 1000000 / 60
-	, cpu_percent_exc_func = (SUM(CASE WHEN p.object_type IN ('FN', 'TF') THEN 0 ELSE p.avg_cpu_time END * p.count_executions) * 100) / 1000000 / 3600 / @vCores
+	, cpu_percent_exc_func = (SUM(CASE WHEN p.object_type IN ('FN', 'TF') THEN 0 ELSE p.avg_cpu_time END * p.count_executions) * 100) / 1000000 / 60 / DATEDIFF(mi, p.start_time, p.end_time) / @vCores
 	, clr_minutes = SUM(p.avg_clr_time * p.count_executions) / 1000000 / 60
 	, logical_reads_gb = SUM(p.avg_logical_io_reads * p.count_executions) / 128 / 1024
 	, memory_grants_gb = SUM(p.avg_query_max_used_memory * p.count_executions) / 128 / 1024
