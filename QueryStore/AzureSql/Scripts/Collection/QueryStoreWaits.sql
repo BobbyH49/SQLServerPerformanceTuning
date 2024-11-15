@@ -25,8 +25,8 @@ CREATE TABLE ##QueryStoreWaits (
 );
 
 DECLARE
-	@start_time DATETIMEOFFSET = '2024-07-10 00:00:00.000 + 00:00'
-	, @end_time DATETIMEOFFSET = '2024-07-11 00:00:00.000 + 00:00';
+	@start_time DATETIMEOFFSET = '2024-10-28 00:00:00.000 + 00:00'
+	, @end_time DATETIMEOFFSET = '2024-10-29 00:00:00.000 + 00:00';
 
 DECLARE @current_database_id SMALLINT, @max_database_id SMALLINT, @dbname NVARCHAR(128), @sqlcmd NVARCHAR(MAX);
 SET @current_database_id = 5;
