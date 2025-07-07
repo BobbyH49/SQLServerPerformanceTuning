@@ -324,7 +324,7 @@ LEFT JOIN (
 		, w.query_plan_hash
 		, total_wait_minutes = SUM(w.total_query_wait_time_ms) / 1000 / 60
 	FROM ##QueryStoreWaits w
-	JOIN @WorstPerformingQueryPlans wpp ON wpp.database_id = w.database_id AND wpp.query_plan_hash = w.query_plan_hash
+	JOIN @WorstPerformingQueryPlans wpp ON wpp.database_id = w.database_id AND wpp.query_hash = w.query_hash AND wpp.query_plan_hash = w.query_plan_hash
 	WHERE start_time >= @start_time
 	AND end_time <= @end_time
 	GROUP BY
