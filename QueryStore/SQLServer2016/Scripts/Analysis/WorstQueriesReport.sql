@@ -110,7 +110,7 @@ UNION
 
 SELECT database_id, database_name, query_hash
 FROM (
-	SELECT TOP (@memory_grants80_pct_query_count)
+	SELECT TOP (@memory_grants_80_pct_query_count)
 		database_id
 		, database_name
 		, query_hash
