@@ -43,7 +43,7 @@ AS (
 		, schema_name
 		, object_name
 )
-SELECT TOP 50
+SELECT
 	database_name
 	, query_hash
 	, object_name
@@ -55,7 +55,7 @@ SELECT TOP 50
 	, total_cpu_minutes
 	, cpu_pct = 
 		CASE WHEN total_cpu_minutes = 0 THEN 0 ELSE
-			CAST(CAST(total_cpu_minutes AS DECIMAL(10,2)) * 100 / (
+			CAST(CAST(total_cpu_minutes AS DECIMAL(15,2)) * 100 / (
 					SELECT SUM(avg_cpu_time * count_executions) / 1000000 / 60 
 					FROM ##QueryStorePerf
 					WHERE start_time >= @start_time

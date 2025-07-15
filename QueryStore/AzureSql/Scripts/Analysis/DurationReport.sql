@@ -41,7 +41,7 @@ AS (
 		, schema_name
 		, object_name
 )
-SELECT TOP 50
+SELECT
 	database_name
 	, query_hash
 	, object_name
@@ -53,7 +53,7 @@ SELECT TOP 50
 	, total_duration_minutes
 	, duration_pct = 
 		CASE WHEN total_duration_minutes = 0 THEN 0 ELSE
-			CAST(CAST(total_duration_minutes AS DECIMAL(10,2)) * 100 / (
+			CAST(CAST(total_duration_minutes AS DECIMAL(15,2)) * 100 / (
 					SELECT SUM(avg_duration * count_executions) / 1000000 / 60 
 					FROM ##QueryStorePerf
 					WHERE start_time >= @start_time

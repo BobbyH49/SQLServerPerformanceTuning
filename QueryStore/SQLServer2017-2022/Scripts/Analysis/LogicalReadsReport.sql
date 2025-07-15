@@ -41,7 +41,7 @@ AS (
 		, schema_name
 		, object_name
 )
-SELECT TOP 50
+SELECT
 	database_name
 	, query_hash
 	, object_name
@@ -53,7 +53,7 @@ SELECT TOP 50
 	, total_logical_reads_gb
 	, logical_reads_pct =
 		CASE WHEN total_logical_reads_gb = 0 THEN 0 ELSE
-			CAST(CAST(total_logical_reads_gb AS DECIMAL(10,2)) * 100 / (
+			CAST(CAST(total_logical_reads_gb AS DECIMAL(15,2)) * 100 / (
 					SELECT SUM(avg_logical_io_reads * count_executions) / 128 / 1024 
 					FROM ##QueryStorePerf
 					WHERE start_time >= @start_time

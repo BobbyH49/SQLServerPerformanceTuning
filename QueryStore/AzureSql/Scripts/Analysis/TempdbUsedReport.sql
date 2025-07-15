@@ -41,7 +41,7 @@ AS (
 		, schema_name
 		, object_name
 )
-SELECT TOP 50
+SELECT
 	database_name
 	, query_hash
 	, object_name
@@ -53,7 +53,7 @@ SELECT TOP 50
 	, total_tempdb_space_used_mb
 	, tempdb_space_used_pct =
 		CASE total_tempdb_space_used_mb WHEN 0 THEN 0 ELSE
-			CAST(CAST(total_tempdb_space_used_mb AS DECIMAL(10,2)) * 100 / (
+			CAST(CAST(total_tempdb_space_used_mb AS DECIMAL(15,2)) * 100 / (
 					SELECT SUM(avg_tempdb_space_used * count_executions) / 128
 					FROM ##QueryStorePerf
 					WHERE start_time >= @start_time

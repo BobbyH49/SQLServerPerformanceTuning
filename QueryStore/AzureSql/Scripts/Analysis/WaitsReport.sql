@@ -60,7 +60,7 @@ AS (
 		database_name
 		, query_hash
 )
-SELECT TOP 50
+SELECT
 	database_name
 	, query_hash
 	, min_query_wait_time_ms
@@ -69,7 +69,7 @@ SELECT TOP 50
 	, total_query_wait_time_minutes
 	, wait_time_pct =
 		CASE total_query_wait_time_minutes WHEN 0 THEN 0 ELSE
-			CAST(CAST(total_query_wait_time_minutes AS DECIMAL(10,2)) * 100 / (
+			CAST(CAST(total_query_wait_time_minutes AS DECIMAL(15,2)) * 100 / (
 					SELECT SUM(total_query_wait_time_ms) / 1000 / 60
 					FROM ##QueryStoreWaits
 					WHERE start_time >= @start_time
